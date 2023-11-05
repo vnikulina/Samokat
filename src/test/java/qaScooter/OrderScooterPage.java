@@ -78,7 +78,6 @@ public class OrderScooterPage {
         nameInputElement.sendKeys(name);
 
         wait.until(ExpectedConditions.attributeToBe(nameInputElement, "value", name));
-        System.out.println("Заполнено имя: " + name);
     }
 
     public void enterSurname(String surname) {
@@ -92,7 +91,6 @@ public class OrderScooterPage {
         surnameInputElement.sendKeys(surname);
 
         wait.until(ExpectedConditions.attributeToBe(surnameInputElement, "value", surname));
-        System.out.println("Заполнено имя: " + surname);
     }
 
     public void enterAddress(String address) {
@@ -106,7 +104,6 @@ public class OrderScooterPage {
         addressInputElement.sendKeys(address);
 
         wait.until(ExpectedConditions.attributeToBe(addressInputElement, "value", address));
-        System.out.println("Заполнен адрес: " + address);
     }
 
     public void selectSubway(String subwayName) {
@@ -119,13 +116,11 @@ public class OrderScooterPage {
         List<WebElement> options = driver.findElements(dropdownSubwayElement);
         for (WebElement option : options) {
             if (option.getText().equals(subwayName)) {
-                System.out.println("Нашли станцию " + option.getText() + " - пробуем на неё кликнуть");
                 JavascriptExecutor executor = (JavascriptExecutor) driver;
                 executor.executeScript("arguments[0].click();", option);
                 break;
             }
         }
-        System.out.println("Выходим из выпадающего списка, выбрали " + subwayName);
     }
 
     public void enterPhone(String phone) {
@@ -137,8 +132,6 @@ public class OrderScooterPage {
 
         phoneInputElement.clear();
         phoneInputElement.sendKeys(phone);
-
-        System.out.println("Заполнен телефон "+ phone);
     }
 
     public void clickNextButton() {
@@ -158,8 +151,6 @@ public class OrderScooterPage {
 
         datePickerElement.clear();
         datePickerElement.sendKeys(date);
-
-        System.out.println("Заполнена дата "+ date);
     }
 
     public void selectTerm(String term) {
