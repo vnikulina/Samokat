@@ -1,5 +1,6 @@
-package qaScooter;
+package pageobject;
 
+import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -7,7 +8,6 @@ import org.openqa.selenium.WebElement;
 
 import java.time.Duration;
 
-import static org.junit.Assert.assertTrue;
 
 public class MainScooterGeneralPage {
     private WebDriver driver;
@@ -28,13 +28,19 @@ public class MainScooterGeneralPage {
         this.driver = driver;
     }
 
-    //Проверить корректность текста заголовка
+    //Проверить корректность текста подзаголовка
     public void checkQuestionsHeader() {
         WebElement questionsTitleElement = driver.findElement(questionsTitle);
         ((JavascriptExecutor)driver).executeScript("arguments[0].scrollIntoView(true);", questionsTitleElement);
 
-        assertTrue("Заголовок раздела вопросов неверный: ожидался "+QUESTIONS_HEADER_TEXT+", фактический "+
-                questionsTitleElement.getText(), questionsTitleElement.getText().equals(QUESTIONS_HEADER_TEXT));
+        Assert.assertEquals("Заголовок раздела вопросов неверный: ожидался " + QUESTIONS_HEADER_TEXT + ", фактический " +
+                questionsTitleElement.getText(), QUESTIONS_HEADER_TEXT, questionsTitleElement.getText());
+    }
+
+    //Проверить, что открылась страница оформления заказа
+    public void checkOrderPageOpened(){
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(20));
+        Assert.assertEquals("Страница оформления заказа не открылась!", ORDER_URL, driver.getCurrentUrl());
     }
 
     public void clickHeaderOrderButton() {
@@ -44,9 +50,6 @@ public class MainScooterGeneralPage {
         ((JavascriptExecutor)driver).executeScript("arguments[0].scrollIntoView(true);", upperButton);
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(20));
         upperButton.click();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(20));
-        //Проверить, что открылась страница оформления заказа
-        assertTrue("Страница оформления заказа не открылась!", driver.getCurrentUrl().equals(ORDER_URL));
     }
 
     public void clickFooterOrderButton() {
@@ -56,9 +59,6 @@ public class MainScooterGeneralPage {
         ((JavascriptExecutor)driver).executeScript("arguments[0].scrollIntoView(true);", lowerButton);
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(20));
         lowerButton.click();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(20));
-        //Проверить, что открылась страница оформления заказа
-        assertTrue("Страница оформления заказа не открылась!", driver.getCurrentUrl().equals(ORDER_URL));
     }
 
 }
