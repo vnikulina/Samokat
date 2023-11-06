@@ -2,6 +2,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import pageobject.*;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -13,8 +14,9 @@ public class MainTests {
 
     @Before
     public void beforeTest() {
-        // драйвер для браузера Chrome
+        // драйвер для браузера
         ChromeOptions options = new ChromeOptions();
+        //driver = new FirefoxDriver();
         driver = new ChromeDriver(options);
         // переход на страницу тестового приложения
         driver.get("https://qa-scooter.praktikum-services.ru/");
@@ -45,6 +47,42 @@ public class MainTests {
             objScooterPage.checkQuestionAndAnswer();
         }
     }
+
+    //Нажимает верхнюю кнопку оформления заказа
+    @Test
+    public void clickUpperOrderButtonOpensOrderPage() {
+        // объект класса главной страницы
+        MainScooterGeneralPage objScooterPage = new MainScooterGeneralPage(driver);
+        // Нажать на верхнюю кнопку
+        objScooterPage.clickHeaderOrderButton();
+        //убедиться, что есть переход на страницу заказа
+        objScooterPage.checkOrderPageOpened();
+    }
+
+    //Нажимает нижнюю кнопку оформления заказа
+    @Test
+    public void clickLowerOrderButtonOpensOrderPage() {
+        // объект класса главной страницы
+        MainScooterGeneralPage objScooterPage = new MainScooterGeneralPage(driver);
+        // Нажать на нижнюю кнопку
+        objScooterPage.clickFooterOrderButton();
+        //убедиться, что есть переход на страницу заказа
+        objScooterPage.checkOrderPageOpened();
+    }
+
+    //Проверка оформления заказа
+    @Test
+    public void checkMakingOrder() {
+        // объект класса страницы с параметрами заказа
+        OrderScooterPage objOrderForm;
+        Object[][] testData = OrderScooterParametersForTest.testOrderData();
+        for (Object[] testOrderData : testData) {
+            objOrderForm = new OrderScooterPage(driver, testOrderData);
+            // Пройти позитивный сценарий с параметрами
+            objOrderForm.positiveOrderFlow();
+        }
+    }
+
 
     @After
     public void teardown() {

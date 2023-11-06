@@ -1,24 +1,20 @@
-package qaScooter;
+package pageobject;
 
 import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
-import java.util.Collection;
 import java.util.List;
 
-@RunWith(Parameterized.class)
 public class OrderScooterPage {
-    private WebDriver driver;
+    private final WebDriver driver;
+    private final Object[] testData;
+
     // Поле ввода имени
     private final By inputName = By.cssSelector("div.Order_Form__17u6u > div:nth-child(1) > input");
     // Поле вводе фамилии
@@ -29,13 +25,15 @@ public class OrderScooterPage {
     private final By dropdownSubway = By.cssSelector("div.select-search");
     private final By dropdownSubwayElement = By.cssSelector("div.select-search__select > ul > li");
     // Поле ввода номера телефона
-    private final By inputPhone = By.cssSelector("div.Order_Form__17u6u > div:nth-child(3) > input");
+    private final By inputPhone = By.cssSelector("div.Order_Form__17u6u > div:nth-child(5) > input");
     // Кнопка "Далее"
     private final By buttonNext = By.cssSelector("div.Order_NextButton__1_rCA > button");
     //Date-picker
-    private final By datePicker = By.cssSelector(".Order_MixedDatePicker__3qiay");
-    //Дропдаун срока аренды
-    private final By dropdownTerm = By.cssSelector("div.Dropdown-root.Order_FilledDate__1pb8n");
+    private final By datePicker = By.cssSelector("div.Order_MixedDatePicker__3qiay > div.react-datepicker-wrapper > div > input");
+    private final By selectedMonthDays = By.cssSelector(".react-datepicker__month .react-datepicker__day");
+    //Дропдаун сроков аренды
+    private final By dropdownTerm = By.cssSelector("div.Dropdown-root");
+    private final By dropdownTerms = By.cssSelector("div.Dropdown-root.is-open > div.Dropdown-menu > div");
     //Боксы выбора цвета
     private final By boxBlackColor = By.cssSelector("#black");
     private final By boxGrayColor = By.cssSelector("#grey");
@@ -45,26 +43,22 @@ public class OrderScooterPage {
     private final By buttonOrder = By.cssSelector("div.Order_Buttons__1xGrp > button:nth-child(2)");
     //Заголовок "Хотите?" на модалке подтверждения
     private final By titleDoYouReallyWant = By.cssSelector(".Order_ModalHeader__3FDaJ");
+    private static final String TITLE_DO_YOU_REALLY_WANT_TO_ORDER = "Хотите оформить заказ?\n" + " ";
     //Кнопка Да
     private final By buttonYes = By.cssSelector("div.Order_Modal__YZ-d3 > div.Order_Buttons__1xGrp > button:nth-child(2)");
     //Заголовок "Заказ оформлен"
-    private final By titleOrderRecieved = By.cssSelector(".Order_ModalHeader__3FDaJ");
-    private Object[][] testData;
+    private final By titleOrderReceived = By.cssSelector(".Order_ModalHeader__3FDaJ");
+    private static final String TITLE_ORDER_PROCESSED = "Заказ оформлен";
+    //Кнопка "Посмотреть статус"
+    private final By buttonStatus = By.cssSelector(".Order_NextButton__1_rCA > button:nth-child(1)");
+    //Logo-button
+    private final By buttonLogoSamokat = By.cssSelector(".Header_LogoScooter__3lsAR");
 
 
     //Конструктор
-    public OrderScooterPage(WebDriver driver,Object[][] testData) {
+    public OrderScooterPage(WebDriver driver,Object[] testData) {
         this.driver = driver;
         this.testData = testData;
-    }
-
-    @Parameterized.Parameters
-    public static Object[][] testData() {
-        return new Object[][] {
-                {"Иван", "Петров", "Ивановская д1, к45", "Сокольники", "12345678901", "2023-12-01", "трое суток",
-                        "black", "Позвоните за час до привоза!"},
-                {"Тест", "Тестовый", "Красная Площадь д1", "Черкизовская", "12345678901", "2023-11-11", "сутки", "gray", " "}
-        };
     }
 
     public void enterName(String name) {
@@ -118,6 +112,7 @@ public class OrderScooterPage {
             if (option.getText().equals(subwayName)) {
                 JavascriptExecutor executor = (JavascriptExecutor) driver;
                 executor.executeScript("arguments[0].click();", option);
+                option.click();
                 break;
             }
         }
@@ -138,7 +133,7 @@ public class OrderScooterPage {
         WebElement nextButtonElement = driver.findElement(buttonNext);
         ((JavascriptExecutor)driver).executeScript("arguments[0].scrollIntoView(true);", nextButtonElement);
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(60));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
         wait.until(ExpectedConditions.elementToBeClickable(nextButtonElement)).click();
     }
 
@@ -148,15 +143,33 @@ public class OrderScooterPage {
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         wait.until(ExpectedConditions.elementToBeClickable(datePickerElement)).click();
-
-        datePickerElement.clear();
         datePickerElement.sendKeys(date);
+
+        List<WebElement> allSelectedMonthDays = driver.findElements(selectedMonthDays);
+        String day = date.substring(0, 2);
+        if (day.substring(0,1).equals("0")) {
+            day = date.substring(1, 2);
+        }
+        for (WebElement option : allSelectedMonthDays) {
+            if (option.getText().equals(day)) {
+                option.click();
+                break;
+            }
+        }
     }
 
     public void selectTerm(String term) {
-        WebElement termDropdown = driver.findElement(dropdownTerm);
-        Select select = new Select(termDropdown);
-        select.selectByVisibleText(term);
+        WebElement lengthDropdown = driver.findElement(dropdownTerm);
+        lengthDropdown.click();
+
+        List<WebElement> allTermsFromDropdown = driver.findElements(dropdownTerms);
+
+        for (WebElement option : allTermsFromDropdown) {
+            if (option.getText().equals(term)) {
+                option.click();
+                break;
+            }
+        }
     }
 
     public void selectColor(String color) {
@@ -176,31 +189,66 @@ public class OrderScooterPage {
 
     public void clickOrderButton() {
         WebElement orderButtonElement = driver.findElement(buttonOrder);
-        orderButtonElement.click();
+        ((JavascriptExecutor)driver).executeScript("arguments[0].scrollIntoView(true);", orderButtonElement);
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+        wait.until(ExpectedConditions.elementToBeClickable(orderButtonElement)).click();
     }
 
     public String getDoYouReallyWantTitle() {
         WebElement titleElement = driver.findElement(titleDoYouReallyWant);
-        return titleElement.getText();
+        ((JavascriptExecutor)driver).executeScript("arguments[0].scrollIntoView(true);", titleElement);
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+        return wait.until(ExpectedConditions.visibilityOf(titleElement)).getText();
+    }
+
+    public void clickYesButton() {
+        WebElement yesButtonElement = driver.findElement(buttonYes);
+        ((JavascriptExecutor)driver).executeScript("arguments[0].scrollIntoView(true);", yesButtonElement);
+
+        yesButtonElement.click();
+    }
+
+    public void clickStatusButton() {
+        WebElement statusButtonElement = driver.findElement(buttonStatus);
+        ((JavascriptExecutor)driver).executeScript("arguments[0].scrollIntoView(true);", statusButtonElement);
+
+        statusButtonElement.click();
+    }
+
+    public void goToMain() {
+        WebElement logoButtonElement = driver.findElement(buttonLogoSamokat);
+        ((JavascriptExecutor)driver).executeScript("arguments[0].scrollIntoView(true);", logoButtonElement);
+
+        logoButtonElement.click();
     }
 
     public String getOrderReceivedTitle() {
-        WebElement titleElement = driver.findElement(titleOrderRecieved);
-        return titleElement.getText();
+        WebElement titleElement = driver.findElement(titleOrderReceived);
+        return titleElement.getText().substring(0, 14);
     }
 
-    @Test
-    public void positiveOrderFlowTest() {
+    public void positiveOrderFlow() {
         // Параметры для теста
-        String name = testData[0][0].toString();
-        String surname = testData[0][1].toString();
-        String address = testData[0][2].toString();
-        String subway = testData[0][3].toString();
-        String phone = testData[0][4].toString();
-        String date = testData[0][5].toString();
-        String term = testData[0][6].toString();
-        String color = testData[0][7].toString();
-        String comment = testData[0][8].toString();
+        String name = testData[0].toString();
+        String surname = testData[1].toString();
+        String address = testData[2].toString();
+        String subway = testData[3].toString();
+        String phone = testData[4].toString();
+        String date = testData[5].toString();
+        String term = testData[6].toString();
+        String color = testData[7].toString();
+        String comment = testData[8].toString();
+        String button = testData[9].toString();
+
+        // объект класса главной страницы для нажатия на кнопку
+        MainScooterGeneralPage objScooterPage = new MainScooterGeneralPage(driver);
+        if (button.equalsIgnoreCase("upper")) {
+            objScooterPage.clickHeaderOrderButton();
+        } else if (button.equalsIgnoreCase("lower")) {
+            objScooterPage.clickFooterOrderButton();
+        }
 
         // Ввод данных
         enterName(name);
@@ -220,17 +268,15 @@ public class OrderScooterPage {
 
         // Проверка результатов
         String confirmationTitle = getDoYouReallyWantTitle();
-        Assert.assertEquals("Хотите оформить заказ?", confirmationTitle);
+        Assert.assertEquals("Заголовок модального окна подтверждения неверный: ",TITLE_DO_YOU_REALLY_WANT_TO_ORDER, confirmationTitle);
 
         clickYesButton();
 
         String orderReceivedTitle = getOrderReceivedTitle();
-        Assert.assertEquals("Заказ оформлен", orderReceivedTitle);
-    }
+        Assert.assertEquals("Не получилось оформить заказ!", TITLE_ORDER_PROCESSED, orderReceivedTitle);
 
-    public void clickYesButton() {
-        WebElement yesButtonElement = driver.findElement(buttonYes);
-        yesButtonElement.click();
+        clickStatusButton();
+        goToMain();
     }
 
 }

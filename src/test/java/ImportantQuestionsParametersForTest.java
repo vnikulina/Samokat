@@ -7,7 +7,6 @@ import static pageobject.MainScooterQuestionsPage.*;
 
 @RunWith(Parameterized.class)
 public class ImportantQuestionsParametersForTest {
-    private WebDriver driver;
 
     @Parameterized.Parameters
     public static Object[][] getQuestions() {
