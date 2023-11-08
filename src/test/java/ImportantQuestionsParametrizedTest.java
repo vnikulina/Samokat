@@ -10,6 +10,7 @@ import pageobject.MainScooterQuestionsPage;
 
 
 import static pageobject.MainScooterQuestionsPage.*;
+import static pageobject.constants.URL.HOME_PAGE;
 
 @RunWith(Parameterized.class)
 public class ImportantQuestionsParametrizedTest {
@@ -45,13 +46,13 @@ public class ImportantQuestionsParametrizedTest {
     // Проверить соответствие текстов вопроса и ответа
     @Test
     public void shouldCheckQuestionAndAnswer() {
-        WebDriver driver;
         ChromeOptions options = new ChromeOptions();
-        //driver = new FirefoxDriver();
-        driver = new ChromeDriver(options);
-        driver.get("https://qa-scooter.praktikum-services.ru/");
+        WebDriver driver = new ChromeDriver(options);;
+        //WebDriver driver = new FirefoxDriver();
+        driver.get(HOME_PAGE);
 
         MainScooterQuestionsPage questionsPage = new MainScooterQuestionsPage(driver);
+
         String questionActualText = questionsPage.getQuestionActualText(importantQuestionLocator);
         questionsPage.clickQuestion(importantQuestionLocator);
         String answerActualText = questionsPage.getAnswerActualText(importantAnswerLocator);

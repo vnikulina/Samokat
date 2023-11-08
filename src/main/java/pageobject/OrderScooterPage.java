@@ -11,9 +11,11 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 import java.util.List;
 
+import static pageobject.MainScooterGeneralPage.LOWER_BUTTON;
+import static pageobject.MainScooterGeneralPage.UPPER_BUTTON;
+
 public class OrderScooterPage {
     private final WebDriver driver;
-    private final Object[] testData;
 
     // Поле ввода имени
     private final By inputName = By.cssSelector("div.Order_Form__17u6u > div:nth-child(1) > input");
@@ -56,9 +58,8 @@ public class OrderScooterPage {
 
 
     //Конструктор
-    public OrderScooterPage(WebDriver driver,Object[] testData) {
+    public OrderScooterPage(WebDriver driver) {
         this.driver = driver;
-        this.testData = testData;
     }
 
     public void enterName(String name) {
@@ -229,24 +230,13 @@ public class OrderScooterPage {
         return titleElement.getText().substring(0, 14);
     }
 
-    public void positiveOrderFlow() {
-        // Параметры для теста
-        String name = testData[0].toString();
-        String surname = testData[1].toString();
-        String address = testData[2].toString();
-        String subway = testData[3].toString();
-        String phone = testData[4].toString();
-        String date = testData[5].toString();
-        String term = testData[6].toString();
-        String color = testData[7].toString();
-        String comment = testData[8].toString();
-        String button = testData[9].toString();
-
+    public void positiveOrderFlow(String name,String surname,String address,String subway,String phone,
+                                  String date,String term,String color,String comment,String button) {
         // объект класса главной страницы для нажатия на кнопку
         MainScooterGeneralPage objScooterPage = new MainScooterGeneralPage(driver);
-        if (button.equalsIgnoreCase("upper")) {
+        if (button.equalsIgnoreCase(UPPER_BUTTON)) {
             objScooterPage.clickHeaderOrderButton();
-        } else if (button.equalsIgnoreCase("lower")) {
+        } else if (button.equalsIgnoreCase(LOWER_BUTTON)) {
             objScooterPage.clickFooterOrderButton();
         }
 

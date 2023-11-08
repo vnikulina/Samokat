@@ -1,8 +1,6 @@
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import pageobject.*;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -52,20 +50,6 @@ public class MainTests {
         //убедиться, что есть переход на страницу заказа
         objScooterPage.checkOrderPageOpened();
     }
-
-    //Проверка оформления заказа
-    @Test
-    public void checkMakingOrder() {
-        // объект класса страницы с параметрами заказа
-        OrderScooterPage objOrderForm;
-        Object[][] testData = OrderScooterParametersForTest.testOrderData();
-        for (Object[] testOrderData : testData) {
-            objOrderForm = new OrderScooterPage(driver, testOrderData);
-            // Пройти позитивный сценарий с параметрами
-            objOrderForm.positiveOrderFlow();
-        }
-    }
-
 
     @After
     public void teardown() {

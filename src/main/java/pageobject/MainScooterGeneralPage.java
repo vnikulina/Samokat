@@ -8,6 +8,8 @@ import org.openqa.selenium.WebElement;
 
 import java.time.Duration;
 
+import static pageobject.constants.URL.ORDER_PAGE;
+
 
 public class MainScooterGeneralPage {
     private WebDriver driver;
@@ -20,8 +22,9 @@ public class MainScooterGeneralPage {
     private final By questionsTitle = By.cssSelector(".Home_FourPart__1uthg > div:nth-child(1)");
     //Ожидаемый текст названия раздела вопросов
     private static final String QUESTIONS_HEADER_TEXT = "Вопросы о важном";
-    //Ожидаемый URL страницы оформления заказа
-    private static final String ORDER_URL = "https://qa-scooter.praktikum-services.ru/order";
+    public static final String UPPER_BUTTON = "upper";
+    public static final String LOWER_BUTTON = "lower";
+
 
     //Конструктор
     public MainScooterGeneralPage(WebDriver driver) {
@@ -40,7 +43,7 @@ public class MainScooterGeneralPage {
     //Проверить, что открылась страница оформления заказа
     public void checkOrderPageOpened(){
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(20));
-        Assert.assertEquals("Страница оформления заказа не открылась!", ORDER_URL, driver.getCurrentUrl());
+        Assert.assertEquals("Страница оформления заказа не открылась!", ORDER_PAGE, driver.getCurrentUrl());
     }
 
     public void clickHeaderOrderButton() {
