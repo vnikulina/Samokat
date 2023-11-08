@@ -1,6 +1,5 @@
 package pageobject;
 
-import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -8,14 +7,7 @@ import org.openqa.selenium.WebElement;
 import java.time.Duration;
 
 public class MainScooterQuestionsPage {
-
     private final WebDriver driver;
-
-    // Элемент выпадающего списка - вопрос и ответ
-    private final By importantQuestionLocator;
-    private final By importantAnswerLocator;
-    private final String questionText;
-    private final String questionAnswer;
 
     //Локаторы вопросов и ответов
     public static final By QUESTION1 = By.id("accordion__heading-0");
@@ -59,36 +51,31 @@ public class MainScooterQuestionsPage {
     public static final String TEXT_QUESTION8 = "Я живу за МКАДом, привезёте?";
     public static final String TEXT_ANSWER8 = "Да, обязательно. Всем самокатов! И Москве, и Московской области.";
 
-    //Конструктор
-   public MainScooterQuestionsPage(By importantQuestionLocator, By importantAnswerLocator,
-                                    String questionText, String questionAnswer, WebDriver driver) {
-          this.driver = driver;
-          this.importantQuestionLocator = importantQuestionLocator;
-          this.importantAnswerLocator = importantAnswerLocator;
-          this.questionText = questionText;
-          this.questionAnswer = questionAnswer;
+    public MainScooterQuestionsPage(WebDriver driver){
+        this.driver = driver;
     }
 
-    // Проверить соответствие текстов вопроса и ответа
-    public void checkQuestionAndAnswer() {
-        // Найти элемент вопроса и ответа
-        WebElement questionElement = driver.findElement(importantQuestionLocator);
-        WebElement answerElement = driver.findElement(importantAnswerLocator);
+    // Найти элемент вопроса
+    public String getQuestionActualText(By importantQuestionLocator){
+        WebElement answerElement = driver.findElement(importantQuestionLocator);
+        ((JavascriptExecutor)driver).executeScript("arguments[0].scrollIntoView(true);", answerElement);
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(80));
+        return answerElement.getText();
+    }
 
-        //Нажать на вопрос
+    // Найти элемент ответа
+    public String getAnswerActualText(By importantAnswerLocator){
+        WebElement answerElement = driver.findElement(importantAnswerLocator);
+        ((JavascriptExecutor)driver).executeScript("arguments[0].scrollIntoView(true);", answerElement);
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(80));
+        return answerElement.getText();
+    }
+
+    //Нажать на вопрос
+    public void clickQuestion(By importantQuestionLocator){
+        WebElement questionElement = driver.findElement(importantQuestionLocator);
         ((JavascriptExecutor)driver).executeScript("arguments[0].scrollIntoView(true);", questionElement);
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(60));
         questionElement.click();
-        ((JavascriptExecutor)driver).executeScript("arguments[0].scrollIntoView(true);", answerElement);
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(60));
-
-        // Получить текст вопроса и ответа
-        String actualQuestion = questionElement.getText();
-        String actualAnswer = answerElement.getText();
-
-        // Проверить соответствие текста вопроса и ответа ожидаемым значениям
-        Assert.assertEquals("Текст вопроса не соответствует ожидаемому: ", actualQuestion, questionText);
-        Assert.assertEquals("Текст ответа не соответствует ожидаемому: ", actualAnswer, questionAnswer);
     }
-
 }

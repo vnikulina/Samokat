@@ -31,23 +31,6 @@ public class MainTests {
         objScooterPage.checkQuestionsHeader();
     }
 
-    //Проверяет соответствие текстов вопросов и ответов ожидаемым
-    @Test
-    public void checkQuestionsAndAnswers() {
-        // объект класса главной страницы
-        MainScooterQuestionsPage objScooterPage;
-
-        // Использует параметры из метода getQuestions
-        Object[][] questions = ImportantQuestionsParametersForTest.getQuestions();
-        for (Object[] question : questions) {
-            objScooterPage = new MainScooterQuestionsPage((By) question[0], (By) question[1],
-                    (String) question[2], (String) question[3], driver);
-
-            // Проверить соответствие текстов вопроса и ответа
-            objScooterPage.checkQuestionAndAnswer();
-        }
-    }
-
     //Нажимает верхнюю кнопку оформления заказа
     @Test
     public void clickUpperOrderButtonOpensOrderPage() {
