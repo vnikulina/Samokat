@@ -36,7 +36,7 @@ public class MainTests {
         MainScooterGeneralPage objScooterPage = new MainScooterGeneralPage(driver);
         // Нажать на верхнюю кнопку
         objScooterPage.clickHeaderOrderButton();
-        //убедиться, что есть переход на страницу заказа
+        // убедиться, что есть переход на страницу заказа
         objScooterPage.checkOrderPageOpened();
     }
 
@@ -47,7 +47,7 @@ public class MainTests {
         MainScooterGeneralPage objScooterPage = new MainScooterGeneralPage(driver);
         // Нажать на нижнюю кнопку
         objScooterPage.clickFooterOrderButton();
-        //убедиться, что есть переход на страницу заказа
+        // убедиться, что есть переход на страницу заказа
         objScooterPage.checkOrderPageOpened();
     }
 

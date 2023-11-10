@@ -8,7 +8,6 @@ import pageobject.OrderScooterPage;
 
 import java.time.Duration;
 
-import static pageobject.MainScooterGeneralPage.LOWER_BUTTON;
 import static pageobject.MainScooterGeneralPage.UPPER_BUTTON;
 import static pageobject.constants.URL.ORDER_PAGE;
 
@@ -45,22 +44,29 @@ public class OrderScooterParametrizedTest {
                 {"Иван", "Петров", "Ивановская д1, к45", "Сокольники", "12345678901", "01.12.2023", "трое суток",
                         "black", "Позвоните за час до привоза!",UPPER_BUTTON},
                 {"Тест", "Тестовый", "Красная Площадь д1", "Черкизовская", "12345678901", "25.11.2023", "сутки",
-                        "gray", " ",LOWER_BUTTON}
+                        "gray", " ",UPPER_BUTTON}
         };
     }
 
     //Проверка оформления заказа
     @Test
     public void checkMakingOrder() {
-        WebDriver driver = new ChromeDriver();;
+        WebDriver driver = new ChromeDriver();
         //WebDriver driver = new FirefoxDriver();
         driver.get(ORDER_PAGE);
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
 
         // объект класса страницы с параметрами заказа
         OrderScooterPage objOrderForm = new OrderScooterPage(driver);
-        // Пройти позитивный сценарий с параметрами (выбор кнопки в параметре)
-        objOrderForm.positiveOrderFlow(name, surname, address, subway, phone, date, term, color, comment, button);
+
+        // Пройти позитивный сценарий с параметрами (выбор кнопки в параметре):
+        objOrderForm
+                .chooseTheOrderButtonToClick(button)
+                .fillInUserPersonalData(name, surname, address, subway, phone)
+                .fillInOrderDetails(date, term, color, comment)
+                .checkOrderConfirmationModal();
+
+        objOrderForm.checkOrderStatusModal();
+        objOrderForm.goToMain();
         driver.quit();
     }
 }

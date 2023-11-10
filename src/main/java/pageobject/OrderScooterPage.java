@@ -230,43 +230,59 @@ public class OrderScooterPage {
         return titleElement.getText().substring(0, 14);
     }
 
-    public void positiveOrderFlow(String name,String surname,String address,String subway,String phone,
-                                  String date,String term,String color,String comment,String button) {
+    // Выбираем, с какой кнопки запустить форму заказа
+    // В ревью была информация, что запускаем только с верхней, но в задаче в постановке написано
+    // учесть обе точки входа, поэтому данный метод всё же оставлю
+    public OrderScooterPage chooseTheOrderButtonToClick(String button){
         // объект класса главной страницы для нажатия на кнопку
         MainScooterGeneralPage objScooterPage = new MainScooterGeneralPage(driver);
-        if (button.equalsIgnoreCase(UPPER_BUTTON)) {
+        switch (button) {
+            case UPPER_BUTTON:
+                objScooterPage.clickHeaderOrderButton();
+                break;
+            case LOWER_BUTTON:
+                objScooterPage.clickFooterOrderButton();
+                break;
+            default: objScooterPage.clickHeaderOrderButton();
+        }
+        return this;
+        /*if (button.equalsIgnoreCase(UPPER_BUTTON)) {
             objScooterPage.clickHeaderOrderButton();
         } else if (button.equalsIgnoreCase(LOWER_BUTTON)) {
             objScooterPage.clickFooterOrderButton();
+        }*/
         }
 
-        // Ввод данных
+    public OrderScooterPage fillInUserPersonalData(String name,String surname,String address,String subway,String phone){
         enterName(name);
         enterSurname(surname);
-
         selectSubway(subway);
         enterAddress(address);
-
         enterPhone(phone);
         clickNextButton();
+        return this;
+    }
 
+    public OrderScooterPage fillInOrderDetails(String date,String term,String color,String comment){
         selectDate(date);
         selectTerm(term);
         selectColor(color);
         enterComment(comment);
         clickOrderButton();
+        return this;
+    }
 
-        // Проверка результатов
+    public void checkOrderConfirmationModal() {
+        // Проверка результатов заполнения
         String confirmationTitle = getDoYouReallyWantTitle();
         Assert.assertEquals("Заголовок модального окна подтверждения неверный: ",TITLE_DO_YOU_REALLY_WANT_TO_ORDER, confirmationTitle);
-
         clickYesButton();
+    }
 
+    public void checkOrderStatusModal() {
         String orderReceivedTitle = getOrderReceivedTitle();
         Assert.assertEquals("Не получилось оформить заказ!", TITLE_ORDER_PROCESSED, orderReceivedTitle);
-
         clickStatusButton();
-        goToMain();
     }
 
 }
