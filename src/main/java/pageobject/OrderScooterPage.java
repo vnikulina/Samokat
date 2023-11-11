@@ -56,7 +56,6 @@ public class OrderScooterPage {
     //Logo-button
     private final By buttonLogoSamokat = By.cssSelector(".Header_LogoScooter__3lsAR");
 
-
     //Конструктор
     public OrderScooterPage(WebDriver driver) {
         this.driver = driver;
